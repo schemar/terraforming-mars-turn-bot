@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./build",
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "module": "ESNext",
+    "target": "es6",
+    "allowJs": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "types": [
+      "node",
+    ],
+    "lib": [
+      "es5",
+      "es2015"
+    ]
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+      "node_modules/*"
+  ]
+}
