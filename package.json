@@ -1,22 +1,26 @@
 {
   "name": "terraforming-mars-turn-bot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A bot that informs you on telegram when it is your turn in Terraforming Mars",
   "author": "Martin Schenck",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node ./build/index.js"
+    "dev": "ts-node ./src/index.ts",
+    "start": "node ./build/index.js",
+    "prettify": "prettier --write ./src/*.ts; prettier --write ./src/**/*.ts"
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "bottleneck": "^2.19.5",
     "node-telegram-bot-api": "^0.53.0",
     "tslib": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
     "@types/node-telegram-bot-api": "^0.51.1",
+    "prettier": "^2.3.0",
+    "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
   }
 }
