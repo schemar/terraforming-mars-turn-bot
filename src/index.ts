@@ -14,7 +14,7 @@ const token = process.env.TMTB_TOKEN;
 const servers = process.env.TMTB_SERVERS?.split(",");
 
 /** Timeout between game checks. */
-const maxTimeout = 60_000;
+const maxTimeout = 10_000;
 
 /** Where game data is stored. */
 const gamesFile = path.join(".", "games.json");

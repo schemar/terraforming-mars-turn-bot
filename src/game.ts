@@ -20,6 +20,8 @@ export interface Game {
   lastGoGameAge: number;
   /** The undo count when the user was last informed that it is their turn. */
   lastGoUndoCount: number;
+  /** Trying to catch some edge cases where the game age doesn't increase. */
+  wasWaiting?: boolean;
 }
 
 /** Remove a specific game from the games array. */

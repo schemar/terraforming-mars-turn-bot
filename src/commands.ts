@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 
-import { Game, extractGameInfo, removeGame } from "../game";
+import { Game, extractGameInfo, removeGame } from "./game";
 
 enum State {
   START,

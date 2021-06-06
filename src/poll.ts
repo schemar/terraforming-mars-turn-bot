@@ -10,7 +10,6 @@ const limiter = new Bottleneck({
   minTime: 10,
 });
 
-/** Keep in checking per timeout. */
 export const poll = async (
   games: Game[],
   bot: TelegramBot
@@ -36,9 +35,10 @@ const checkWaiting = async (
       waitingforUrl
     );
     const { result } = waitingfor.data;
+
     switch (result) {
       case "WAIT":
-        // Nothing to do.
+        game.wasWaiting = true;
         break;
       case "GO":
         return go(game, bot);
@@ -74,6 +74,7 @@ const refresh = async (game: Game, bot: TelegramBot): Promise<Game | null> => {
     const { game: remoteGame } = data;
 
     if (remoteGame?.phase === Phase.END) {
+      console.info("end from refresh", { game });
       bot.sendMessage(
         game.chatId,
         `A game of Terraforming Mars has ended.\n${game.url}/player?id=${game.playerId}`
@@ -104,32 +105,37 @@ const refresh = async (game: Game, bot: TelegramBot): Promise<Game | null> => {
 
 /** Use the game API to see if it is the user's turn. */
 const go = async (game: Game, bot: TelegramBot): Promise<Game | null> => {
-  const playerUrl = `${game.url}/api/player?id=${game.playerId}`;
-  try {
-    const { data } = await axios.get<ApiResponse>(playerUrl);
-    const { game: remoteGame, needsToDraft, needsToResearch } = data;
+  // Best effort to notify a player whenever it is their turn but not twice for the same turn.
+  // Difficult due to how research and drafting are provided by the API.
+  // Game age does not change at all if all other players pass...
+  if (
+    game.lastGoGameAge < game.gameAge ||
+    game.lastGoUndoCount < game.undoCount ||
+    game.wasWaiting
+  ) {
+    game.wasWaiting = false;
 
-    if (remoteGame?.phase === Phase.END) {
-      bot.sendMessage(
-        game.chatId,
-        `A game of Terraforming Mars has ended.\n${game.url}/player?id=${game.playerId}`
-      );
-      return null;
-    }
+    const playerUrl = `${game.url}/api/player?id=${game.playerId}`;
+    try {
+      const { data } = await axios.get<ApiResponse>(playerUrl);
+      const { game: remoteGame, needsToDraft, needsToResearch } = data;
 
-    // Best effort to notify a player whenever it is their turn but not twice for the same turn.
-    // Difficult due to how research and drafting are provided by the API.
-    // Game age does not change at all if all other players pass...
-    if (
-      game.lastGoGameAge < game.gameAge ||
-      game.lastGoUndoCount < game.undoCount
-    ) {
+      if (remoteGame?.phase === Phase.END) {
+        console.info("end from go", { game });
+        bot.sendMessage(
+          game.chatId,
+          `A game of Terraforming Mars has ended.\n${game.url}/player?id=${game.playerId}`
+        );
+        return null;
+      }
+
       let message =
         "It is your turn in a Terraforming Mars game.\n" +
         `${game.url}/player?id=${game.playerId}\n\n`;
 
       if (needsToDraft) {
-        message += "It is time to draft.\n\n";
+        message +=
+          "It is time to draft. I am sorry, but I won't be able to reliably inform you of your turn during drafting.\n\n";
       }
 
       if (needsToResearch) {
@@ -142,12 +148,12 @@ const go = async (game: Game, bot: TelegramBot): Promise<Game | null> => {
 
       game.lastGoGameAge = game.gameAge;
       game.lastGoUndoCount = game.undoCount;
+    } catch (error) {
+      console.error("Go: Could not reach game server for player update", {
+        error: error.message,
+        game,
+      });
     }
-  } catch (error) {
-    console.error("Go: Could not reach game server for player update", {
-      error: error.message,
-      game,
-    });
   }
 
   return game;
