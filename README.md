@@ -2,7 +2,7 @@
 
 This bot informs a user when it is their turn in a game of https://github.com/bafolts/terraforming-mars.
 
-It doesn't work perfectly for drafting or quick turn succession.
+It doesn't work perfectly for drafting.
 
 ## Installation
 
@@ -54,6 +54,6 @@ Search for the bot you created on Telegram. Send `/help` to get instructions.
 
 The bot will notify you when it is your turn in a game of the open source version of Terraforming Mars.
 
-Unfortunately, the bot is currently not able to inform you about updates during a research or drafting phase.
+Unfortunately, the bot is currently not able to inform you about updates during a research phase.
 
 A link to a game for the `/start` and `/stop` commands looks like this: `https://tm.example.com/player?id=abc123`
