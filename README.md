@@ -26,7 +26,7 @@ Instead of `yarn start` you can use the simple `endless.sh` wrapper:
 
 The bot uses the following rate limit when querying the server for updates:
 * Wait until all games were checked before starting another round of checks
-* If checking all games took less than 10 seconds, wait until 60 seconds have passed since starting the previous check
+* If checking all games took less than 10 seconds, wait until 10 seconds have passed since starting the previous check
 * When sending requests to the game server(s):
     * Max two running requests in parallel
     * Wait 10 milliseconds after each request
